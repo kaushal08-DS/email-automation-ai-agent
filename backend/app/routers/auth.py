@@ -16,8 +16,7 @@ from ..services.security import encrypt, make_session
 from ..config import settings
 
 
-router = APIRouter(prefix="/auth", tags=["auth"])
-
+router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 @router.get("/google")
 def google_start(request: Request):
