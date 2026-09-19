@@ -176,7 +176,6 @@ python-multipart==0.0.26
 pytorch-lightning==2.6.5
 pytorch-metric-learning==2.9.0
 pytz==2024.2
-pywinpty==2.0.14
 PyYAML==6.0.2
 pyzmq==26.2.0
 qrcode==8.1
