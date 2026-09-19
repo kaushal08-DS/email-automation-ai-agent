@@ -1,0 +1,3 @@
+'use client'; import Link from 'next/link'; import {usePathname} from 'next/navigation';
+const items=[['/dashboard','Dashboard'],['/replies','Replies'],['/promotional','Promotional'],['/insights','Insights & Analysis'],['/alerts','Alerts & Deadlines'],['/writing-style','Writing Style'],['/gmail-connection','Gmail Connection'],['/subscription','Subscription'],['/settings','Settings']];
+export default function Nav(){const p=usePathname();return <aside className="side"><div className="brand">MailPilot AI</div><nav className="nav">{items.map(([href,label])=><Link key={href} href={href} style={{background:p===href?'#1b202a':undefined,color:p===href?'#fff':undefined}}>{label}</Link>)}</nav></aside>}
