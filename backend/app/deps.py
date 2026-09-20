@@ -36,15 +36,20 @@ def current_user(
     token = request.cookies.get("session")
 
     if not token:
+        print("AUTH DEBUG: session cookie is MISSING")
         raise HTTPException(
             status_code=401,
             detail="Please sign in",
         )
 
+    print("AUTH DEBUG: session cookie received")
+
     try:
         payload = decode_session(token)
         user_id = int(payload["sub"])
-    except Exception:
+        print("AUTH DEBUG: session decoded successfully")
+    except Exception as exc:
+        print(f"AUTH DEBUG: session decode failed: {type(exc).__name__}")
         raise HTTPException(
             status_code=401,
             detail="Session expired",

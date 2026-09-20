@@ -26,12 +26,13 @@ def google_start(request: Request):
     response = RedirectResponse(auth_url)
 
     response.set_cookie(
-        "oauth_state",
-        state,
+        key="oauth_state",
+        value=state,
         httponly=True,
         max_age=600,
-        secure=settings.cookie_secure,
+        secure=True,
         samesite="lax",
+        path="/",
     )
 
     return response
@@ -103,11 +104,12 @@ def google_callback(
     )
 
     response.set_cookie(
-        "session",
-        make_session(user.id),
+        key="session",
+        value=make_session(user.id),
         httponly=True,
-        secure=settings.cookie_secure,
-        samesite="lax",
+        secure=True,
+        samesite="none",
+        path="/",
         max_age=604800,
     )
 
