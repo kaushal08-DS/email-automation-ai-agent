@@ -19,7 +19,10 @@ export default function Callback() {
           router.replace("/subscription");
         }
       } catch (err) {
-        console.error("AUTH CALLBACK ERROR:", err);
+        console.error(
+          "AUTH CALLBACK ERROR:",
+          err
+        );
 
         setError(
           err instanceof Error
@@ -44,7 +47,9 @@ export default function Callback() {
 
           <button
             className="btn primary"
-            onClick={() => router.replace("/login")}
+            onClick={() =>
+              router.replace("/login")
+            }
           >
             Back to Login
           </button>
@@ -56,7 +61,10 @@ export default function Callback() {
   return (
     <div className="layout-center">
       <div className="login">
-        <h1>Connecting your Gmail account…</h1>
+        <h1>
+          Connecting your Gmail account…
+        </h1>
+
         <p className="muted">
           Finishing your secure login.
         </p>
