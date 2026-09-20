@@ -1,65 +1,66 @@
-import { NextRequest, NextResponse } from "next/server";
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-const BACKEND_URL =
-  process.env.BACKEND_URL ||
-  "https://email-automation-ai-agent.onrender.com";
+from .config import settings
+from .db import Base, engine
+from .routers import (
+    auth,
+    user,
+    style,
+    gmail,
+    emails,
+    payments,
+    dashboard,
+    alerts,
+    insights,
+)
 
-export async function GET(request: NextRequest) {
-  const code = request.nextUrl.searchParams.get("code");
 
-  if (!code) {
-    return NextResponse.redirect(
-      new URL("/login?error=missing_code", request.url)
-    );
-  }
+# Create database tables
+Base.metadata.create_all(bind=engine)
 
-  try {
-    const backendResponse = await fetch(
-      `${BACKEND_URL}/api/auth/exchange?code=${encodeURIComponent(code)}`,
-      {
-        method: "GET",
-        cache: "no-store",
-      }
-    );
 
-    if (!backendResponse.ok) {
-      console.error("AUTH EXCHANGE FAILED:", backendResponse.status);
+app = FastAPI(
+    title="Email Automation AI Agent",
+    version="1.0.0",
+)
 
-      return NextResponse.redirect(
-        new URL("/login?error=authentication_failed", request.url)
-      );
-    }
 
-    const data = await backendResponse.json();
+# ============================================================
+# CORS
+# ============================================================
 
-    if (!data.session) {
-      console.error("AUTH EXCHANGE ERROR: session missing");
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        settings.frontend_url,
+        "https://email-automation-ai-agent-1.onrender.com",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-      return NextResponse.redirect(
-        new URL("/login?error=missing_session", request.url)
-      );
-    }
 
-    const response = NextResponse.redirect(
-      new URL("/auth/callback", request.url)
-    );
+# ============================================================
+# Routers
+# ============================================================
 
-    response.cookies.set({
-      name: "session",
-      value: data.session,
-      httpOnly: true,
-      secure: true,
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 7,
-    });
+app.include_router(auth.router)
+app.include_router(user.router)
+app.include_router(style.router)
+app.include_router(gmail.router)
+app.include_router(emails.router)
+app.include_router(payments.router)
+app.include_router(dashboard.router)
+app.include_router(alerts.router)
+app.include_router(insights.router)
 
-    return response;
-  } catch (error) {
-    console.error("AUTH CALLBACK ERROR:", error);
 
-    return NextResponse.redirect(
-      new URL("/login?error=authentication_failed", request.url)
-    );
-  }
-}
+# ============================================================
+# Health Check
+# ============================================================
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}

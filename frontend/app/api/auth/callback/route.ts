@@ -9,10 +9,7 @@ export async function GET(request: NextRequest) {
 
   if (!code) {
     return NextResponse.redirect(
-      new URL(
-        "/login?error=missing_code",
-        request.url
-      )
+      new URL("/login?error=missing_code", request.url)
     );
   }
 
@@ -54,15 +51,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // ---------------------------------------------------
-    // CREATE FRONTEND SESSION COOKIE
-    // ---------------------------------------------------
-
     const response = NextResponse.redirect(
-      new URL(
-        "/auth/callback",
-        request.url
-      )
+      new URL("/auth/callback", request.url)
     );
 
     response.cookies.set({
