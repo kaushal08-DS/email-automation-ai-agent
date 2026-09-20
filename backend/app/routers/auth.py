@@ -110,6 +110,7 @@ def google_callback(
         secure=True,
         samesite="none",
         path="/",
+        domain=".onrender.com",
         max_age=604800,
     )
 
