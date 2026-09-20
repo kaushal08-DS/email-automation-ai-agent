@@ -2,29 +2,27 @@ import Link from "next/link";
 
 export const metadata = {
   title: "Terms of Service | Email Automation AI",
-  description:
-    "Terms of Service for Email Automation AI.",
+  description: "Terms of Service for Email Automation AI.",
 };
 
 export default function TermsPage() {
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100">
       <div className="mx-auto max-w-4xl px-6 py-12 sm:px-8 lg:px-10">
-        {/* Header */}
         <header className="mb-12">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-sm font-medium text-blue-400 transition hover:text-blue-300"
+            className="text-sm font-medium text-blue-400 hover:text-blue-300"
           >
             ← Back to Email Automation AI
           </Link>
 
           <div className="mt-8">
-            <div className="mb-4 inline-flex items-center rounded-full border border-blue-400/20 bg-blue-400/10 px-3 py-1 text-sm text-blue-300">
-              Terms of Service
-            </div>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
+              Legal
+            </p>
 
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+            <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
               Terms of Service
             </h1>
 
@@ -34,7 +32,7 @@ export default function TermsPage() {
           </div>
         </header>
 
-        <div className="space-y-10 leading-7 text-slate-300">
+        <article className="space-y-10 text-[15px] leading-7 text-slate-300">
           <section>
             <h2 className="mb-4 text-2xl font-semibold text-white">
               1. Acceptance of Terms
@@ -46,8 +44,7 @@ export default function TermsPage() {
             </p>
 
             <p className="mt-4">
-              If you do not agree with these Terms, you should not use the
-              application.
+              If you do not agree with these Terms, do not use the application.
             </p>
           </section>
 
@@ -57,41 +54,39 @@ export default function TermsPage() {
             </h2>
 
             <p>
-              Email Automation AI is a software platform that provides email
-              automation, email organization, artificial intelligence-assisted
-              analysis, email drafting, and related productivity functionality.
+              Email Automation AI provides email automation, email
+              organization, AI-assisted analysis, email drafting, and related
+              productivity functionality.
             </p>
 
             <p className="mt-4">
-              Certain features may require users to connect a Google Account
-              and authorize access to Gmail.
+              Some features require a Google Account and Gmail authorization.
             </p>
           </section>
 
           <section>
             <h2 className="mb-4 text-2xl font-semibold text-white">
-              3. Google Account and Gmail Access
+              3. Google Account and Gmail
             </h2>
 
             <p>
-              You may connect your Google Account to Email Automation AI using
-              Google's OAuth authorization process.
+              Users may connect their Google Account through Google's OAuth
+              authorization process.
             </p>
 
             <p className="mt-4">
-              You control the permissions granted to the application through
+              Users control the permissions granted to the application through
               Google's authorization screen.
             </p>
 
             <p className="mt-4">
-              Gmail access is used only to provide functionality requested by
-              the user, such as reading relevant email information or sending
-              emails when the required permission has been granted.
+              Gmail access is used to provide features requested by the user,
+              including applicable email automation and sending functionality.
             </p>
 
             <p className="mt-4">
-              You may revoke the application's access to your Google Account
-              through your Google Account settings.
+              Users can revoke the application's Google Account access through
+              their Google Account settings.
             </p>
           </section>
 
@@ -102,7 +97,7 @@ export default function TermsPage() {
 
             <p>
               You are responsible for maintaining the security of your account
-              and for all activities performed through your account.
+              and for activity performed through your account.
             </p>
 
             <p className="mt-4">
@@ -112,10 +107,10 @@ export default function TermsPage() {
             <ul className="mt-4 list-disc space-y-3 pl-6">
               <li>Violate applicable laws or regulations.</li>
               <li>Send unlawful, fraudulent, abusive, or harmful communications.</li>
-              <li>Attempt to gain unauthorized access to another person's account or data.</li>
-              <li>Interfere with or disrupt the operation of the service.</li>
+              <li>Access another person's account or data without authorization.</li>
+              <li>Disrupt or interfere with the service.</li>
               <li>Abuse automated email functionality for spam or malicious activity.</li>
-              <li>Use the application in a way that violates Google's applicable policies.</li>
+              <li>Violate applicable Google policies.</li>
             </ul>
           </section>
 
@@ -125,17 +120,14 @@ export default function TermsPage() {
             </h2>
 
             <p>
-              Some features of Email Automation AI use artificial intelligence
-              to generate suggestions, classifications, summaries, drafts, or
+              Some application features use artificial intelligence to
+              generate drafts, suggestions, classifications, summaries, or
               other content.
             </p>
 
             <p className="mt-4">
-              AI-generated content may contain mistakes or inaccuracies.
-              Users are responsible for reviewing generated content before
-              sending or relying on it, particularly when the content has
-              legal, financial, professional, or other significant
-              consequences.
+              AI-generated content may contain errors. Users are responsible
+              for reviewing generated content before sending or relying on it.
             </p>
           </section>
 
@@ -145,15 +137,13 @@ export default function TermsPage() {
             </h2>
 
             <p>
-              If you enable an automated email feature, you authorize the
-              application to perform the actions associated with that feature
-              according to the settings you configure.
+              When you enable an automated email feature, the application may
+              perform actions according to the settings you configure.
             </p>
 
             <p className="mt-4">
-              You are responsible for configuring automation rules carefully
-              and reviewing recipients, content, schedules, and other settings
-              before enabling automated actions.
+              You are responsible for reviewing recipients, content, schedules,
+              and other automation settings before enabling automated actions.
             </p>
           </section>
 
@@ -167,15 +157,12 @@ export default function TermsPage() {
             </p>
 
             <p className="mt-4">
-              Subscription pricing, duration, payment terms, and available
-              features will be presented to users before a purchase is
-              completed.
+              Pricing, subscription duration, available features, and payment
+              terms are presented before a purchase is completed.
             </p>
 
             <p className="mt-4">
-              Payments may be processed by a third-party payment provider.
-              Payment credentials are handled according to the payment
-              provider's applicable policies and security practices.
+              Payments may be processed by third-party payment providers.
             </p>
           </section>
 
@@ -189,11 +176,6 @@ export default function TermsPage() {
               branding, and associated materials are owned by or licensed to
               the service operator unless otherwise stated.
             </p>
-
-            <p className="mt-4">
-              These Terms do not transfer ownership of the application or its
-              underlying technology to users.
-            </p>
           </section>
 
           <section>
@@ -202,15 +184,9 @@ export default function TermsPage() {
             </h2>
 
             <p>
-              We aim to keep Email Automation AI available and reliable, but
-              we do not guarantee that the service will always be available,
-              uninterrupted, secure, or error-free.
-            </p>
-
-            <p className="mt-4">
-              The service may occasionally be unavailable because of
-              maintenance, infrastructure problems, third-party service
-              outages, security events, or other circumstances.
+              We aim to maintain reliable service availability but do not
+              guarantee that the service will always be uninterrupted,
+              error-free, or continuously available.
             </p>
           </section>
 
@@ -220,14 +196,14 @@ export default function TermsPage() {
             </h2>
 
             <p>
-              Email Automation AI may depend on third-party services including
-              Google APIs, hosting providers, database providers, artificial
-              intelligence services, and payment providers.
+              The application may depend on third-party services such as
+              Google APIs, hosting providers, database providers, AI services,
+              and payment providers.
             </p>
 
             <p className="mt-4">
-              Availability and functionality of these third-party services may
-              affect features of Email Automation AI.
+              Changes or outages affecting these services may affect
+              corresponding application functionality.
             </p>
           </section>
 
@@ -237,14 +213,14 @@ export default function TermsPage() {
             </h2>
 
             <p>
-              We may suspend or terminate access to the service where
-              reasonably necessary to protect the service, users, third
-              parties, or comply with applicable law.
+              Access may be suspended or terminated when reasonably necessary
+              to protect the service, users, third parties, or comply with
+              applicable law.
             </p>
 
             <p className="mt-4">
               Users may stop using the application at any time and may request
-              account deletion according to our Privacy Policy.
+              account deletion according to the Privacy Policy.
             </p>
           </section>
 
@@ -254,8 +230,8 @@ export default function TermsPage() {
             </h2>
 
             <p>
-              Email Automation AI is provided on an "as available" basis.
-              To the maximum extent permitted by applicable law, we do not
+              Email Automation AI is provided on an "as available" basis. To
+              the maximum extent permitted by applicable law, we do not
               guarantee that the service or AI-generated results will always be
               accurate, complete, uninterrupted, or suitable for every
               particular purpose.
@@ -268,13 +244,12 @@ export default function TermsPage() {
             </h2>
 
             <p>
-              We may update these Terms from time to time as the service,
-              business practices, or legal requirements change.
+              We may update these Terms when the service, business practices,
+              or legal requirements change.
             </p>
 
             <p className="mt-4">
-              Updated Terms will be published on this page with a revised
-              updated date.
+              Updated Terms will be published on this page with a revised date.
             </p>
           </section>
 
@@ -283,36 +258,33 @@ export default function TermsPage() {
               14. Contact
             </h2>
 
-            <p>
-              Questions regarding these Terms can be sent to:
-            </p>
+            <div className="rounded-2xl border border-white/10 bg-slate-900 p-6">
+              <p className="font-semibold text-white">
+                Email Automation AI
+              </p>
 
-            <div className="mt-5 rounded-2xl border border-slate-800 bg-slate-900 p-6">
-              <p className="font-semibold text-white">Email Automation AI</p>
               <p className="mt-2 text-slate-400">
                 Email: kaushalgaikwad810@gmail.com
               </p>
             </div>
           </section>
+        </article>
 
-          <section className="border-t border-slate-800 pt-8">
-            <div className="flex flex-wrap gap-5 text-sm">
-              <Link
-                href="/"
-                className="text-blue-400 hover:text-blue-300"
-              >
-                Home
-              </Link>
+        <footer className="mt-12 flex flex-wrap gap-6 border-t border-white/10 pt-8 text-sm">
+          <Link
+            href="/"
+            className="text-blue-400 hover:text-blue-300"
+          >
+            Home
+          </Link>
 
-              <Link
-                href="/privacy"
-                className="text-blue-400 hover:text-blue-300"
-              >
-                Privacy Policy
-              </Link>
-            </div>
-          </section>
-        </div>
+          <Link
+            href="/privacy"
+            className="text-blue-400 hover:text-blue-300"
+          >
+            Privacy Policy
+          </Link>
+        </footer>
       </div>
     </main>
   );

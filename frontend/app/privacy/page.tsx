@@ -3,28 +3,27 @@ import Link from "next/link";
 export const metadata = {
   title: "Privacy Policy | Email Automation AI",
   description:
-    "Privacy Policy for Email Automation AI explaining how user and Google account data is accessed, used, stored, protected, and deleted.",
+    "Privacy Policy for Email Automation AI.",
 };
 
 export default function PrivacyPolicyPage() {
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100">
       <div className="mx-auto max-w-4xl px-6 py-12 sm:px-8 lg:px-10">
-        {/* Header */}
         <header className="mb-12">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-sm font-medium text-blue-400 transition hover:text-blue-300"
+            className="text-sm font-medium text-blue-400 hover:text-blue-300"
           >
             ← Back to Email Automation AI
           </Link>
 
           <div className="mt-8">
-            <div className="mb-4 inline-flex items-center rounded-full border border-blue-400/20 bg-blue-400/10 px-3 py-1 text-sm text-blue-300">
-              Privacy Policy
-            </div>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
+              Privacy
+            </p>
 
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+            <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
               Privacy Policy
             </h1>
 
@@ -34,302 +33,219 @@ export default function PrivacyPolicyPage() {
           </div>
         </header>
 
-        <div className="space-y-10 leading-7 text-slate-300">
-          {/* Introduction */}
+        <article className="space-y-10 text-[15px] leading-7 text-slate-300">
           <section>
             <h2 className="mb-4 text-2xl font-semibold text-white">
               1. Introduction
             </h2>
 
             <p>
-              Email Automation AI is an email automation platform that helps
-              users organize, analyze, draft, and send emails using automation
-              and artificial intelligence features.
+              Email Automation AI is an email productivity and automation
+              application that can connect to a user's Google Account and
+              Gmail account to provide email-related functionality.
             </p>
 
             <p className="mt-4">
-              This Privacy Policy explains how Email Automation AI collects,
-              accesses, uses, stores, protects, and deletes information when
-              you use our application.
-            </p>
-
-            <p className="mt-4">
-              By using Email Automation AI, you acknowledge that you have read
-              and understood this Privacy Policy.
+              This Privacy Policy explains how information is accessed, used,
+              stored, protected, and deleted when you use Email Automation AI.
             </p>
           </section>
 
-          {/* Information collected */}
           <section>
             <h2 className="mb-4 text-2xl font-semibold text-white">
               2. Information We Collect
             </h2>
 
             <p>
-              Depending on how you use the application, we may process the
-              following categories of information:
+              Depending on the features you use, the application may process:
             </p>
 
             <ul className="mt-4 list-disc space-y-3 pl-6">
-              <li>
-                <strong className="text-white">Account information:</strong>{" "}
-                name, email address, profile information, and Google account
-                identifier.
-              </li>
-
-              <li>
-                <strong className="text-white">Authentication information:</strong>{" "}
-                information required to maintain your authenticated session.
-              </li>
-
-              <li>
-                <strong className="text-white">Gmail information:</strong>{" "}
-                information made available through the Gmail permissions you
-                explicitly authorize.
-              </li>
-
-              <li>
-                <strong className="text-white">Email information:</strong>{" "}
-                email messages and related information required to provide the
-                email automation features you request.
-              </li>
-
-              <li>
-                <strong className="text-white">Usage information:</strong>{" "}
-                information about interactions with the application, such as
-                actions performed through the platform and technical
-                information needed to operate and secure the service.
-              </li>
-
-              <li>
-                <strong className="text-white">Payment information:</strong>{" "}
-                subscription and payment-related information processed through
-                our payment provider. We do not intentionally store complete
-                payment card numbers or payment authentication credentials.
-              </li>
+              <li>Google account name and email address.</li>
+              <li>Google account identifier.</li>
+              <li>Gmail information required by enabled features.</li>
+              <li>Authentication and session information.</li>
+              <li>Application usage and technical information.</li>
+              <li>Subscription and payment-related information.</li>
             </ul>
           </section>
 
-          {/* Google user data */}
           <section>
             <h2 className="mb-4 text-2xl font-semibold text-white">
               3. Google User Data
             </h2>
 
             <p>
-              Email Automation AI uses Google OAuth to allow users to
-              authenticate and, when authorized, connect their Gmail account
-              to the application.
+              Email Automation AI uses Google OAuth to authenticate users and
+              allow users to connect Gmail.
             </p>
 
             <p className="mt-4">
-              Depending on the permissions granted by the user, the application
-              may access:
+              Depending on the permissions granted by the user, the
+              application may access:
             </p>
 
             <ul className="mt-4 list-disc space-y-3 pl-6">
-              <li>Your Google account name and email address.</li>
-              <li>Your Google account identifier.</li>
-              <li>Gmail messages and related information required for email automation.</li>
-              <li>Permission to send Gmail messages on your behalf when you authorize that capability.</li>
+              <li>Google account name and email address.</li>
+              <li>Google account identifier.</li>
+              <li>Gmail messages and related information required by enabled features.</li>
+              <li>Permission to send Gmail messages when the user grants the required permission.</li>
             </ul>
-
-            <p className="mt-4">
-              We only request Google permissions that are needed for the
-              functionality of the application.
-            </p>
           </section>
 
-          {/* How Google data is used */}
           <section>
             <h2 className="mb-4 text-2xl font-semibold text-white">
               4. How Google Data Is Used
             </h2>
 
             <p>
-              Google user data is used to provide the features that users
-              request through Email Automation AI.
-            </p>
-
-            <p className="mt-4">
-              This may include:
+              Google user data is used to provide the functionality requested
+              by the user, including:
             </p>
 
             <ul className="mt-4 list-disc space-y-3 pl-6">
-              <li>Authenticating the user.</li>
-              <li>Connecting the user's Gmail account.</li>
-              <li>Reading email information when the user requests an automation or analysis feature.</li>
-              <li>Generating email drafts or automated responses requested by the user.</li>
-              <li>Sending emails through Gmail when the user has granted the required permission.</li>
-              <li>Providing automation, organization, and productivity functionality.</li>
-              <li>Maintaining and securing the user's account and session.</li>
+              <li>Authenticating users.</li>
+              <li>Connecting a user's Gmail account.</li>
+              <li>Reading email information required by enabled features.</li>
+              <li>Generating AI-assisted email drafts or responses.</li>
+              <li>Sending emails through Gmail when authorized by the user.</li>
+              <li>Providing email automation and productivity functionality.</li>
             </ul>
 
             <p className="mt-4">
-              We do not use Google user data for targeted advertising, selling
-              data to data brokers, or other purposes unrelated to providing or
-              improving the user-facing functionality of Email Automation AI.
+              We do not sell Google user data or use Google user data for
+              targeted advertising.
             </p>
 
             <p className="mt-4">
-              Our handling of Google user data is intended to comply with the
-              applicable Google API Services User Data Policy and Limited Use
-              requirements.
+              Google user data is handled in accordance with applicable Google
+              API Services User Data Policy requirements.
             </p>
           </section>
 
-          {/* AI processing */}
           <section>
             <h2 className="mb-4 text-2xl font-semibold text-white">
-              5. Artificial Intelligence Processing
+              5. Artificial Intelligence
             </h2>
 
             <p>
-              Email Automation AI may use artificial intelligence services to
-              provide features such as email analysis, classification,
-              summarization, drafting, and automation.
+              Some features may use artificial intelligence to analyze,
+              summarize, classify, or generate email-related content.
             </p>
 
             <p className="mt-4">
-              When an AI-powered feature requires email content or related
-              information to generate a result, the relevant information may
-              be processed by the AI service configured for the application.
+              Information required to perform an AI feature may be processed
+              by the AI service configured for the application.
             </p>
 
             <p className="mt-4">
-              AI processing is used to provide the requested application
-              functionality and is not intended to be used for advertising or
-              selling personal information.
+              AI processing is intended to provide the requested application
+              functionality and is not intended for advertising or selling
+              personal information.
             </p>
           </section>
 
-          {/* Sharing */}
           <section>
             <h2 className="mb-4 text-2xl font-semibold text-white">
               6. Information Sharing
             </h2>
 
             <p>
-              We do not sell your personal information or Google user data.
+              We do not sell personal information or Google user data.
             </p>
 
             <p className="mt-4">
-              Information may be processed by service providers that are
-              necessary to operate Email Automation AI, such as:
+              Information may be processed by service providers required to
+              operate the application, including:
             </p>
 
             <ul className="mt-4 list-disc space-y-3 pl-6">
               <li>Cloud hosting and database providers.</li>
-              <li>Google APIs used to provide Gmail functionality.</li>
-              <li>Artificial intelligence providers used to provide requested AI functionality.</li>
-              <li>Payment providers used to process subscriptions and payments.</li>
-              <li>Security, monitoring, and infrastructure providers when required to operate the service.</li>
+              <li>Google APIs.</li>
+              <li>Artificial intelligence providers.</li>
+              <li>Payment providers.</li>
+              <li>Security and infrastructure providers.</li>
             </ul>
 
             <p className="mt-4">
-              Service providers receive only the information reasonably
-              necessary to provide their services.
-            </p>
-
-            <p className="mt-4">
-              We may also disclose information when required by applicable law,
-              legal process, or to protect the security and rights of the
-              service and its users.
+              Information may also be disclosed when required by applicable
+              law or necessary to protect the service, users, or third parties.
             </p>
           </section>
 
-          {/* Storage */}
           <section>
             <h2 className="mb-4 text-2xl font-semibold text-white">
-              7. Data Storage and Security
+              7. Security
             </h2>
 
             <p>
               We use reasonable technical and organizational measures to
-              protect information processed by Email Automation AI.
+              protect information processed by the application.
             </p>
 
             <p className="mt-4">
-              Authentication sessions are protected using secure mechanisms.
-              Sensitive authentication credentials, including Gmail refresh
-              tokens used by the application, are encrypted before being stored
-              by the application.
+              Sensitive authentication credentials used by the application are
+              protected using encryption and other security mechanisms.
             </p>
 
             <p className="mt-4">
-              However, no internet transmission or electronic storage system can
-              be guaranteed to be completely secure.
+              No internet service can guarantee absolute security.
             </p>
           </section>
 
-          {/* Retention */}
           <section>
             <h2 className="mb-4 text-2xl font-semibold text-white">
               8. Data Retention
             </h2>
 
             <p>
-              We retain information for as long as reasonably necessary to
-              provide the requested services, maintain accounts, comply with
-              legal obligations, resolve disputes, and enforce our agreements.
+              Information is retained for as long as reasonably necessary to
+              provide the service, maintain accounts, meet legal requirements,
+              resolve disputes, and protect the service.
             </p>
 
             <p className="mt-4">
-              Gmail access information and authentication credentials are
-              retained only while needed to provide connected Gmail features or
-              until the user disconnects the account, subject to applicable
-              legal or operational requirements.
-            </p>
-
-            <p className="mt-4">
-              When information is no longer required for the purposes described
-              in this policy, we may delete or anonymize it.
+              Gmail authentication information is retained while needed for
+              connected Gmail functionality or until the user disconnects the
+              account, subject to applicable legal and operational requirements.
             </p>
           </section>
 
-          {/* Account deletion */}
           <section>
             <h2 className="mb-4 text-2xl font-semibold text-white">
-              9. Data Deletion and Account Requests
+              9. Data Deletion
             </h2>
 
             <p>
               Users may request deletion of their account and associated
-              personal information by contacting us using the email address
-              provided below.
+              personal information by contacting us.
             </p>
 
             <p className="mt-4">
-              Users may also revoke Email Automation AI's access to their
-              Google Account through their Google Account security settings.
+              Users can also revoke the application's Google Account access
+              through their Google Account security settings.
             </p>
 
             <p className="mt-4">
-              When an account deletion request is received, we will take
-              reasonable steps to delete or anonymize information that we are
-              not required to retain for legal, security, fraud-prevention, or
-              other legitimate operational purposes.
+              We will take reasonable steps to delete or anonymize information
+              that is no longer required, except where retention is required
+              for legal, security, fraud-prevention, or legitimate operational
+              purposes.
             </p>
           </section>
 
-          {/* Cookies */}
           <section>
             <h2 className="mb-4 text-2xl font-semibold text-white">
-              10. Cookies and Sessions
+              10. Cookies
             </h2>
 
             <p>
-              Email Automation AI uses authentication cookies and similar
-              mechanisms to maintain secure user sessions.
-            </p>
-
-            <p className="mt-4">
-              These cookies are used for authentication and application
-              functionality rather than for third-party advertising.
+              Email Automation AI uses authentication cookies and related
+              mechanisms to maintain secure user sessions and application
+              functionality.
             </p>
           </section>
 
-          {/* Children's privacy */}
           <section>
             <h2 className="mb-4 text-2xl font-semibold text-white">
               11. Children's Privacy
@@ -337,71 +253,57 @@ export default function PrivacyPolicyPage() {
 
             <p>
               Email Automation AI is not intended for children who are below
-              the minimum age required to use the applicable Google services
-              and our application.
-            </p>
-
-            <p className="mt-4">
-              We do not knowingly collect personal information from children in
-              violation of applicable law.
+              the minimum age required to use the applicable services.
             </p>
           </section>
 
-          {/* Changes */}
           <section>
             <h2 className="mb-4 text-2xl font-semibold text-white">
-              12. Changes to This Privacy Policy
+              12. Changes to This Policy
             </h2>
 
             <p>
               We may update this Privacy Policy when our services, data
-              practices, security practices, or legal requirements change.
+              practices, or legal requirements change.
             </p>
 
             <p className="mt-4">
-              The updated policy will be published on this page with a revised
-              effective or updated date.
+              Updates will be published on this page with a revised date.
             </p>
           </section>
 
-          {/* Contact */}
           <section>
             <h2 className="mb-4 text-2xl font-semibold text-white">
-              13. Contact Us
+              13. Contact
             </h2>
 
-            <p>
-              If you have questions about this Privacy Policy, Google user
-              data, account deletion, or our data practices, contact:
-            </p>
+            <div className="rounded-2xl border border-white/10 bg-slate-900 p-6">
+              <p className="font-semibold text-white">
+                Email Automation AI
+              </p>
 
-            <div className="mt-5 rounded-2xl border border-slate-800 bg-slate-900 p-6">
-              <p className="font-semibold text-white">Email Automation AI</p>
               <p className="mt-2 text-slate-400">
                 Email: kaushalgaikwad810@gmail.com
               </p>
             </div>
           </section>
+        </article>
 
-          {/* Footer */}
-          <section className="border-t border-slate-800 pt-8">
-            <div className="flex flex-wrap gap-5 text-sm">
-              <Link
-                href="/"
-                className="text-blue-400 hover:text-blue-300"
-              >
-                Home
-              </Link>
+        <footer className="mt-12 flex flex-wrap gap-6 border-t border-white/10 pt-8 text-sm">
+          <Link
+            href="/"
+            className="text-blue-400 hover:text-blue-300"
+          >
+            Home
+          </Link>
 
-              <Link
-                href="/terms"
-                className="text-blue-400 hover:text-blue-300"
-              >
-                Terms of Service
-              </Link>
-            </div>
-          </section>
-        </div>
+          <Link
+            href="/terms"
+            className="text-blue-400 hover:text-blue-300"
+          >
+            Terms of Service
+          </Link>
+        </footer>
       </div>
     </main>
   );

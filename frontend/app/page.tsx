@@ -43,11 +43,11 @@ const googleData = [
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-slate-950 text-white">
-      {/* Navigation */}
-      <nav className="border-b border-white/10 bg-slate-950/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 sm:px-8 lg:px-10">
+      {/* NAVBAR */}
+      <nav className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/90 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 sm:px-8 lg:px-10">
           <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500 font-bold text-white shadow-lg shadow-blue-500/20">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500 font-bold shadow-lg shadow-blue-500/20">
               EA
             </div>
 
@@ -55,37 +55,38 @@ export default function HomePage() {
               <p className="font-semibold tracking-tight">
                 Email Automation AI
               </p>
+
               <p className="text-xs text-slate-500">
                 Intelligent email workflows
               </p>
             </div>
           </Link>
 
-          <div className="hidden items-center gap-6 text-sm text-slate-400 sm:flex">
+          <div className="hidden items-center gap-7 text-sm text-slate-400 md:flex">
             <a
               href="#features"
-              className="transition hover:text-white"
+              className="transition-colors hover:text-white"
             >
               Features
             </a>
 
             <a
               href="#google-data"
-              className="transition hover:text-white"
+              className="transition-colors hover:text-white"
             >
               Google Data
             </a>
 
             <Link
               href="/privacy"
-              className="transition hover:text-white"
+              className="transition-colors hover:text-white"
             >
               Privacy
             </Link>
 
             <Link
               href="/terms"
-              className="transition hover:text-white"
+              className="transition-colors hover:text-white"
             >
               Terms
             </Link>
@@ -100,13 +101,17 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {/* Hero */}
+      {/* HERO */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl" />
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute left-1/2 top-0 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-blue-500/10 blur-[120px]" />
+
+          <div className="absolute left-10 top-80 h-64 w-64 rounded-full bg-cyan-500/5 blur-[100px]" />
+
+          <div className="absolute right-10 top-96 h-64 w-64 rounded-full bg-purple-500/5 blur-[100px]" />
         </div>
 
-        <div className="mx-auto max-w-7xl px-6 pb-24 pt-20 sm:px-8 sm:pt-28 lg:px-10">
+        <div className="relative mx-auto max-w-7xl px-6 pb-24 pt-24 sm:px-8 sm:pt-32 lg:px-10">
           <div className="max-w-4xl">
             <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-blue-400/20 bg-blue-400/10 px-4 py-2 text-sm text-blue-300">
               <span className="h-2 w-2 rounded-full bg-blue-400" />
@@ -115,12 +120,12 @@ export default function HomePage() {
 
             <h1 className="text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
               Automate your email.
-              <span className="block text-blue-400">
+              <span className="block bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
                 Work smarter.
               </span>
             </h1>
 
-            <p className="mt-7 max-w-2xl text-lg leading-8 text-slate-400 sm:text-xl">
+            <p className="mt-7 max-w-3xl text-lg leading-8 text-slate-400 sm:text-xl">
               Email Automation AI is a productivity platform that connects
               with Gmail to help users organize email workflows, analyze
               messages, generate AI-assisted responses, and automate repetitive
@@ -130,7 +135,7 @@ export default function HomePage() {
             <div className="mt-9 flex flex-col gap-4 sm:flex-row">
               <Link
                 href="/login"
-                className="inline-flex items-center justify-center rounded-xl bg-blue-500 px-6 py-3.5 font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:bg-blue-400"
+                className="inline-flex items-center justify-center rounded-xl bg-blue-500 px-7 py-3.5 font-semibold text-white shadow-xl shadow-blue-500/20 transition hover:-translate-y-0.5 hover:bg-blue-400"
               >
                 Get Started
                 <span className="ml-2">→</span>
@@ -138,38 +143,54 @@ export default function HomePage() {
 
               <Link
                 href="/privacy"
-                className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 font-semibold text-slate-200 transition hover:bg-white/10"
+                className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-7 py-3.5 font-semibold text-slate-200 transition hover:bg-white/10"
               >
                 Read Privacy Policy
               </Link>
             </div>
           </div>
 
-          {/* Trust information */}
-          <div className="mt-20 grid gap-4 border-t border-white/10 pt-8 sm:grid-cols-3">
-            <div>
-              <p className="text-sm font-medium text-slate-200">
+          {/* TRUST CARDS */}
+          <div className="mt-20 grid gap-4 md:grid-cols-3">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur">
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
+                G
+              </div>
+
+              <h3 className="font-semibold text-white">
                 Google OAuth
-              </p>
-              <p className="mt-1 text-sm text-slate-500">
+              </h3>
+
+              <p className="mt-2 text-sm leading-6 text-slate-500">
                 Authentication through Google's authorization system.
               </p>
             </div>
 
-            <div>
-              <p className="text-sm font-medium text-slate-200">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur">
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400">
+                @
+              </div>
+
+              <h3 className="font-semibold text-white">
                 Gmail Integration
-              </p>
-              <p className="mt-1 text-sm text-slate-500">
-                Gmail access is requested only for enabled features.
+              </h3>
+
+              <p className="mt-2 text-sm leading-6 text-slate-500">
+                Gmail access is requested only for enabled application
+                features.
               </p>
             </div>
 
-            <div>
-              <p className="text-sm font-medium text-slate-200">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur">
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-purple-500/10 text-purple-400">
+                ✓
+              </div>
+
+              <h3 className="font-semibold text-white">
                 User Control
-              </p>
-              <p className="mt-1 text-sm text-slate-500">
+              </h3>
+
+              <p className="mt-2 text-sm leading-6 text-slate-500">
                 Users control the permissions granted to the application.
               </p>
             </div>
@@ -177,13 +198,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Features */}
+      {/* FEATURES */}
       <section
         id="features"
         className="border-y border-white/10 bg-slate-900/40"
       >
         <div className="mx-auto max-w-7xl px-6 py-24 sm:px-8 lg:px-10">
-          <div className="max-w-2xl">
+          <div className="max-w-3xl">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
               What the application does
             </p>
@@ -203,14 +224,16 @@ export default function HomePage() {
             {features.map((feature) => (
               <div
                 key={feature.number}
-                className="rounded-2xl border border-white/10 bg-slate-950 p-7 transition hover:border-blue-400/30"
+                className="group rounded-2xl border border-white/10 bg-slate-950 p-7 transition duration-300 hover:-translate-y-1 hover:border-blue-400/30 hover:bg-slate-900"
               >
                 <div className="flex items-start justify-between">
                   <span className="text-sm font-semibold text-blue-400">
                     {feature.number}
                   </span>
 
-                  <span className="text-slate-700">✦</span>
+                  <span className="text-slate-700 transition group-hover:text-blue-400">
+                    ✦
+                  </span>
                 </div>
 
                 <h3 className="mt-8 text-xl font-semibold">
@@ -226,7 +249,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Google Data */}
+      {/* GOOGLE DATA */}
       <section id="google-data">
         <div className="mx-auto max-w-7xl px-6 py-24 sm:px-8 lg:px-10">
           <div className="grid gap-14 lg:grid-cols-2 lg:items-start">
@@ -247,13 +270,12 @@ export default function HomePage() {
               </p>
 
               <p className="mt-5 leading-8 text-slate-400">
-                The application does not request Gmail access simply for
-                advertising. Google data is used to provide the email
-                functionality that the user enables.
+                Google data is used to provide the email functionality that
+                the user enables and is not requested simply for advertising.
               </p>
             </div>
 
-            <div className="rounded-3xl border border-white/10 bg-slate-900/60 p-7">
+            <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-7 shadow-2xl shadow-black/20">
               <h3 className="text-lg font-semibold">
                 Google information that may be accessed
               </h3>
@@ -281,7 +303,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Privacy commitment */}
+      {/* PRIVACY */}
       <section className="border-y border-white/10 bg-slate-900/40">
         <div className="mx-auto max-w-5xl px-6 py-20 text-center sm:px-8">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
@@ -338,11 +360,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* FOOTER */}
       <footer className="border-t border-white/10 bg-slate-950">
         <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-10 sm:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-10">
           <div>
             <p className="font-semibold">Email Automation AI</p>
+
             <p className="mt-1 text-sm text-slate-500">
               Intelligent email automation and productivity.
             </p>
