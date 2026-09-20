@@ -1,7 +1,3 @@
-import os
-
-os.environ.setdefault("OAUTHLIB_INSECURE_TRANSPORT", "1")
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
