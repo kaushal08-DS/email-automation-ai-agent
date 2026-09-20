@@ -42,6 +42,10 @@ export async function GET(request: NextRequest) {
     const data = await backendResponse.json();
 
     if (!data.session) {
+      console.error(
+        "AUTH EXCHANGE ERROR: session missing"
+      );
+
       return NextResponse.redirect(
         new URL(
           "/login?error=missing_session",
@@ -49,6 +53,10 @@ export async function GET(request: NextRequest) {
         )
       );
     }
+
+    // ---------------------------------------------------
+    // CREATE FRONTEND SESSION COOKIE
+    // ---------------------------------------------------
 
     const response = NextResponse.redirect(
       new URL(

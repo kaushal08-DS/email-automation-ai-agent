@@ -16,9 +16,13 @@ def make_flow(state=None):
         "web": {
             "client_id": settings.google_client_id,
             "client_secret": settings.google_client_secret,
-            "redirect_uris": [settings.google_redirect_uri],
-            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-            "token_uri": "https://oauth2.googleapis.com/token",
+            "redirect_uris": [
+                settings.google_redirect_uri
+            ],
+            "auth_uri":
+                "https://accounts.google.com/o/oauth2/auth",
+            "token_uri":
+                "https://oauth2.googleapis.com/token",
         }
     }
 
