@@ -1,5 +1,3 @@
-import os
-
 from google_auth_oauthlib.flow import Flow
 from ..config import settings
 
@@ -29,11 +27,9 @@ def make_flow(state=None):
         scopes=SCOPES,
         state=state,
         redirect_uri=settings.google_redirect_uri,
+        autogenerate_code_verifier=False,
     )
 
-    # Google may return equivalent OpenID scopes as
-    # userinfo.email / userinfo.profile.
-    # oauthlib otherwise treats this as a scope mismatch.
     flow.oauth2session.scope = [
         "openid",
         "https://www.googleapis.com/auth/userinfo.email",
