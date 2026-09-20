@@ -1,49 +1,65 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+import { NextRequest, NextResponse } from "next/server";
 
-from .config import settings
-from .db import Base, engine
-from .routers import (
-    auth,
-    user,
-    style,
-    gmail,
-    emails,
-    payments,
-    dashboard,
-    alerts,
-    insights,
-)
+const BACKEND_URL =
+  process.env.BACKEND_URL ||
+  "https://email-automation-ai-agent.onrender.com";
 
-Base.metadata.create_all(bind=engine)
+export async function GET(request: NextRequest) {
+  const code = request.nextUrl.searchParams.get("code");
 
-app = FastAPI(
-    title="Email Automation AI Agent",
-    version="1.0.0",
-)
+  if (!code) {
+    return NextResponse.redirect(
+      new URL("/login?error=missing_code", request.url)
+    );
+  }
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        settings.frontend_url,
-        "https://email-automation-ai-agent-1.onrender.com",
-    ],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+  try {
+    const backendResponse = await fetch(
+      `${BACKEND_URL}/api/auth/exchange?code=${encodeURIComponent(code)}`,
+      {
+        method: "GET",
+        cache: "no-store",
+      }
+    );
 
-app.include_router(auth.router)
-app.include_router(user.router)
-app.include_router(style.router)
-app.include_router(gmail.router)
-app.include_router(emails.router)
-app.include_router(payments.router)
-app.include_router(dashboard.router)
-app.include_router(alerts.router)
-app.include_router(insights.router)
+    if (!backendResponse.ok) {
+      console.error("AUTH EXCHANGE FAILED:", backendResponse.status);
 
+      return NextResponse.redirect(
+        new URL("/login?error=authentication_failed", request.url)
+      );
+    }
 
-@app.get("/health")
-def health():
-    return {"status": "ok"}
+    const data = await backendResponse.json();
+
+    if (!data.session) {
+      console.error("AUTH EXCHANGE ERROR: session missing");
+
+      return NextResponse.redirect(
+        new URL("/login?error=missing_session", request.url)
+      );
+    }
+
+    const response = NextResponse.redirect(
+      new URL("/auth/callback", request.url)
+    );
+
+    response.cookies.set({
+      name: "session",
+      value: data.session,
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
+    return response;
+  } catch (error) {
+    console.error("AUTH CALLBACK ERROR:", error);
+
+    return NextResponse.redirect(
+      new URL("/login?error=authentication_failed", request.url)
+    );
+  }
+}
