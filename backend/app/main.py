@@ -34,7 +34,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         settings.frontend_url,
-        "https://email-automation-ai-agent-1.onrender.com",
+        "https://https://mailpilotai.theworkpc.com",
     ],
     allow_credentials=True,
     allow_methods=["*"],

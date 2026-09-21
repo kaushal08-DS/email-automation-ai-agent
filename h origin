@@ -6,7 +6,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     app_env: str = "development"
 
-    frontend_url: str = "https://email-automation-ai-agent-1.onrender.com"
+    frontend_url: str = "https://https://mailpilotai.theworkpc.com"
     backend_url: str = "https://email-automation-ai-agent.onrender.com"
 
     database_url: str

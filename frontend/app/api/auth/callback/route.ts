@@ -6,7 +6,7 @@ const BACKEND_URL =
 
 const FRONTEND_URL =
   process.env.FRONTEND_URL ||
-  "https://email-automation-ai-agent-1.onrender.com";
+  "https://mailpilotai.theworkpc.com";
 
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get("code");
