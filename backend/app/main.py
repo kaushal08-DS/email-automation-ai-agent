@@ -16,9 +16,16 @@ from .routers import (
 )
 
 
-# Create database tables
+# ============================================================
+# DATABASE
+# ============================================================
+
 Base.metadata.create_all(bind=engine)
 
+
+# ============================================================
+# APPLICATION
+# ============================================================
 
 app = FastAPI(
     title="Email Automation AI Agent",
@@ -32,18 +39,23 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
+
     allow_origins=[
-        settings.frontend_url,
-        "https://https://mailpilotai.theworkpc.com",
+        "https://mailpilotai.theworkpc.com",
+        "https://email-automation-ai-agent-1.onrender.com",
+        "http://localhost:3000",
     ],
+
     allow_credentials=True,
+
     allow_methods=["*"],
+
     allow_headers=["*"],
 )
 
 
 # ============================================================
-# Routers
+# ROUTERS
 # ============================================================
 
 app.include_router(auth.router)
@@ -58,9 +70,11 @@ app.include_router(insights.router)
 
 
 # ============================================================
-# Health Check
+# HEALTH
 # ============================================================
 
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    return {
+        "status": "ok"
+    }

@@ -1,74 +1,119 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { api } from "../../../lib/api";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+
+import { api } from "../../../lib/api";
 
 export default function Callback() {
   const router = useRouter();
-  const [error, setError] = useState("");
 
   useEffect(() => {
+    let cancelled = false;
+
     async function finishLogin() {
       try {
+        /*
+         * The session cookie should already have been
+         * created by:
+         *
+         * /api/auth/callback
+         *
+         * Now verify that the browser is authenticated.
+         */
+
         const user = await api("/api/me");
+
+        if (cancelled) {
+          return;
+        }
 
         if (user.subscription?.active) {
           router.replace("/dashboard");
         } else {
           router.replace("/subscription");
         }
-      } catch (err) {
+      } catch (error) {
         console.error(
-          "AUTH CALLBACK ERROR:",
-          err
+          "AUTH CALLBACK VERIFICATION ERROR:",
+          error
         );
 
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Authentication failed"
-        );
+        if (!cancelled) {
+          router.replace(
+            "/login?error=session_not_found"
+          );
+        }
       }
     }
 
     finishLogin();
+
+    return () => {
+      cancelled = true;
+    };
   }, [router]);
 
-  if (error) {
-    return (
-      <div className="layout-center">
-        <div className="login">
-          <h1>Authentication failed</h1>
-
-          <p className="muted">
-            {error}
-          </p>
-
-          <button
-            className="btn primary"
-            onClick={() =>
-              router.replace("/login")
-            }
-          >
-            Back to Login
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="layout-center">
-      <div className="login">
-        <h1>
-          Connecting your Gmail account…
+    <main
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "#050505",
+        color: "#fff",
+        padding: 24,
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          maxWidth: 420,
+          textAlign: "center",
+        }}
+      >
+        <div
+          style={{
+            width: 42,
+            height: 42,
+            margin: "0 auto 18px",
+            borderRadius: "50%",
+            border: "3px solid #292929",
+            borderTopColor: "#fff",
+            animation: "mailpilot-spin 0.8s linear infinite",
+          }}
+        />
+
+        <h1
+          style={{
+            margin: 0,
+            fontSize: 22,
+            fontWeight: 700,
+            letterSpacing: "-0.03em",
+          }}
+        >
+          Connecting your Gmail account
         </h1>
 
-        <p className="muted">
-          Finishing your secure login.
+        <p
+          style={{
+            marginTop: 10,
+            color: "#888",
+            fontSize: 14,
+          }}
+        >
+          Finishing your secure login…
         </p>
       </div>
-    </div>
+
+      <style jsx>{`
+        @keyframes mailpilot-spin {
+          to {
+            transform: rotate(360deg);
+          }
+        }
+      `}</style>
+    </main>
   );
 }

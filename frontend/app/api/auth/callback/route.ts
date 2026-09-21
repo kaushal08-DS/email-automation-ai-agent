@@ -11,7 +11,6 @@ const FRONTEND_URL =
 export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get("code");
 
-  // If Google/backend did not provide an exchange code
   if (!code) {
     return NextResponse.redirect(
       `${FRONTEND_URL}/login?error=missing_code`
@@ -19,7 +18,8 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Exchange the temporary OAuth token for the normal session token
+    console.log("AUTH CALLBACK: exchanging OAuth code");
+
     const backendResponse = await fetch(
       `${BACKEND_URL}/api/auth/exchange?code=${encodeURIComponent(code)}`,
       {
@@ -42,16 +42,34 @@ export async function GET(request: NextRequest) {
     const data = await backendResponse.json();
 
     if (!data.session) {
-      console.error("AUTH EXCHANGE ERROR: session missing");
+      console.error(
+        "AUTH EXCHANGE ERROR: session missing"
+      );
 
       return NextResponse.redirect(
         `${FRONTEND_URL}/login?error=missing_session`
       );
     }
 
-    console.log("AUTH EXCHANGE SUCCESS");
+    console.log(
+      "AUTH EXCHANGE SUCCESS: session received"
+    );
 
-    // Create the frontend-owned session cookie
+    /*
+     * IMPORTANT
+     *
+     * The session cookie belongs to the frontend domain:
+     *
+     * mailpilotai.theworkpc.com
+     *
+     * The browser will then automatically send this
+     * cookie when calling:
+     *
+     * /api/me
+     * /api/dashboard
+     * /api/gmail/sync
+     */
+
     const response = NextResponse.redirect(
       `${FRONTEND_URL}/auth/callback`
     );
@@ -59,18 +77,28 @@ export async function GET(request: NextRequest) {
     response.cookies.set({
       name: "session",
       value: data.session,
+
       httpOnly: true,
+
       secure: true,
+
       sameSite: "lax",
+
       path: "/",
+
       maxAge: 60 * 60 * 24 * 7,
     });
 
-    console.log("FRONTEND SESSION COOKIE CREATED");
+    console.log(
+      "AUTH CALLBACK: session cookie created for frontend"
+    );
 
     return response;
   } catch (error) {
-    console.error("AUTH CALLBACK ERROR:", error);
+    console.error(
+      "AUTH CALLBACK ERROR:",
+      error
+    );
 
     return NextResponse.redirect(
       `${FRONTEND_URL}/login?error=authentication_failed`

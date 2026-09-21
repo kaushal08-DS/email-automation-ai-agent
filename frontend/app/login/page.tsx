@@ -1,1 +1,21 @@
-'use client'; import {API} from '../../lib/api'; export default function Login(){return <div className="layout-center"><div className="login"><h1>MailPilot AI</h1><p className="muted">Your personal AI email assistant.</p><p>Connect Gmail, let AI organize your inbox, review suggested replies, and approve every message before it is sent.</p><button className="btn primary" onClick={() => (location.href = "/api/auth/google")}>Continue with Google</button><p className="muted" style={{fontSize:12,marginTop:18}}>You will choose exactly what Gmail access the assistant needs.</p></div></div>}
+"use client";
+
+import { useEffect } from "react";
+
+export default function LoginPage() {
+  useEffect(() => {
+    window.location.replace("/api/auth/google");
+  }, []);
+
+  return (
+    <main className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="text-center text-white">
+        <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+
+        <p className="text-sm text-slate-400">
+          Redirecting to Google...
+        </p>
+      </div>
+    </main>
+  );
+}
