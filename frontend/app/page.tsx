@@ -94,10 +94,11 @@ export default function HomePage() {
 
           <Link
             href="/login"
-            className="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-950 transition hover:bg-slate-200"
+            className="inline-flex items-center justify-center rounded-xl bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:bg-blue-400"
           >
             Sign in
           </Link>
+  
         </div>
       </nav>
 
@@ -324,7 +325,21 @@ export default function HomePage() {
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
             <Link
               href="/privacy"
-              className="rounded-xl bg-white px-6 py-3 font-semibold text-slate-950 transition hover:bg-slate-200"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "12px 24px",
+                borderRadius: "12px",
+                backgroundColor: "#2563eb",
+                color: "#ffffff",
+                fontSize: "15px",
+                fontWeight: 600,
+                textDecoration: "none",
+                border: "1px solid #2563eb",
+                boxShadow: "0 8px 24px rgba(37, 99, 235, 0.20)",
+                transition: "all 0.2s ease",
+              }}
             >
               View Privacy Policy
             </Link>
