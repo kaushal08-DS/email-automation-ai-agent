@@ -1,4 +1,5 @@
 import asyncio
+import json
 import httpx
 
 from ..config import settings
@@ -38,15 +39,20 @@ async def ai_json(system: str, user: str):
     max_attempts = 3
 
     async with httpx.AsyncClient(timeout=60) as client:
+
         for attempt in range(max_attempts):
+
             response = await client.post(
                 OPENROUTER_URL,
                 json=payload,
                 headers=headers,
             )
 
+            # Handle OpenRouter rate limiting
             if response.status_code == 429:
+
                 if attempt < max_attempts - 1:
+
                     retry_after = response.headers.get("Retry-After")
 
                     try:
@@ -62,7 +68,9 @@ async def ai_json(system: str, user: str):
                     "Please try again in a moment."
                 )
 
+            # Handle other API errors
             if response.status_code >= 400:
+
                 try:
                     error_data = response.json()
                 except Exception:
@@ -75,11 +83,27 @@ async def ai_json(system: str, user: str):
             data = response.json()
 
             try:
-                return data["choices"][0]["message"]["content"]
+                content = data["choices"][0]["message"]["content"]
             except (KeyError, IndexError, TypeError) as exc:
                 raise RuntimeError(
                     "AI service returned an unexpected response."
                 ) from exc
+
+            # OpenRouter returns JSON as text.
+            # Convert that JSON text into a Python dictionary.
+            try:
+                result = json.loads(content)
+            except (json.JSONDecodeError, TypeError) as exc:
+                raise RuntimeError(
+                    "AI service returned invalid JSON."
+                ) from exc
+
+            if not isinstance(result, dict):
+                raise RuntimeError(
+                    "AI service returned JSON in an unexpected format."
+                )
+
+            return result
 
     raise RuntimeError("AI service request failed.")
 
@@ -112,6 +136,7 @@ Return ONLY valid JSON with these fields:
 }
 
 Priority must be one of:
+
 - low
 - medium
 - high
