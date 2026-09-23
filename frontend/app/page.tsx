@@ -1,415 +1,240 @@
-import Link from "next/link";
+"use client";
 
-export const metadata = {
-  title: "Email Automation AI | Intelligent Email Automation",
-  description:
-    "Email Automation AI helps users manage, analyze, draft, and automate email workflows using Gmail and artificial intelligence.",
-};
+import { useEffect, useState } from "react";
+import Hero from "../components/Hero";
 
-const features = [
-  {
-    number: "01",
-    title: "Connect Gmail",
-    description:
-      "Securely connect your Google Account through Google's OAuth authorization flow and choose the permissions required by the application.",
-  },
-  {
-    number: "02",
-    title: "Analyze Emails",
-    description:
-      "Use automation and AI-assisted workflows to organize and analyze email information according to the features you enable.",
-  },
-  {
-    number: "03",
-    title: "Generate Responses",
-    description:
-      "Create AI-assisted email drafts and responses designed to help reduce repetitive writing tasks.",
-  },
-  {
-    number: "04",
-    title: "Automate Workflows",
-    description:
-      "Configure email automation workflows for repetitive communication tasks and review your settings before enabling them.",
-  },
-];
-
-const googleData = [
-  "Google account name and email address",
-  "Google account identifier",
-  "Gmail messages and related information required by enabled features",
-  "Permission to send Gmail messages when the user authorizes that capability",
-];
+const BACKEND_URL =
+  "https://email-automation-ai-agent.onrender.com";
 
 export default function HomePage() {
+  const [backendReady, setBackendReady] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    let timer: NodeJS.Timeout | null = null;
+
+    async function wakeBackend() {
+      const maxAttempts = 20;
+      let attempts = 0;
+
+      while (!cancelled && attempts < maxAttempts) {
+        attempts++;
+
+        try {
+          const response = await fetch(
+            `${BACKEND_URL}/health`,
+            {
+              method: "GET",
+              cache: "no-store",
+              headers: {
+                Accept: "application/json",
+              },
+            }
+          );
+
+          if (response.ok) {
+            console.log("MailPilot backend is ready.");
+
+            if (!cancelled) {
+              setBackendReady(true);
+            }
+
+            return;
+          }
+        } catch {
+          console.log(
+            `MailPilot backend waking up... attempt ${attempts}`
+          );
+        }
+
+        await new Promise<void>((resolve) => {
+          timer = setTimeout(resolve, 3000);
+        });
+      }
+
+      if (!cancelled) {
+        console.warn(
+          "MailPilot backend did not become ready within the warm-up period."
+        );
+      }
+    }
+
+    wakeBackend();
+
+    return () => {
+      cancelled = true;
+
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  }, []);
+
   return (
-    <main className="min-h-screen bg-slate-950 text-white">
-      {/* NAVBAR */}
-      <nav className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/90 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 sm:px-8 lg:px-10">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500 font-bold shadow-lg shadow-blue-500/20">
-              EA
-            </div>
+    <main className="min-h-screen bg-[#050505] text-white">
+      {/* Navigation */}
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#050505]/90 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
+          <a
+            href="/"
+            className="text-xl font-bold tracking-tight text-white"
+          >
+            MailPilot AI
+          </a>
 
-            <div>
-              <p className="font-semibold tracking-tight">
-                Email Automation AI
-              </p>
-
-              <p className="text-xs text-slate-500">
-                Intelligent email workflows
-              </p>
-            </div>
-          </Link>
-
-          <div className="hidden items-center gap-7 text-sm text-slate-400 md:flex">
+          <nav className="hidden items-center gap-8 md:flex">
             <a
               href="#features"
-              className="transition-colors hover:text-white"
+              className="text-sm text-white/60 transition hover:text-white"
             >
               Features
             </a>
 
             <a
-              href="#google-data"
-              className="transition-colors hover:text-white"
-            >
-              Google Data
-            </a>
-
-            <Link
               href="/privacy"
-              className="transition-colors hover:text-white"
+              className="text-sm text-white/60 transition hover:text-white"
             >
               Privacy
-            </Link>
-
-            <Link
-              href="/terms"
-              className="transition-colors hover:text-white"
-            >
-              Terms
-            </Link>
-          </div>
-
-          <Link
-            href="/login"
-            className="inline-flex items-center justify-center rounded-xl bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:bg-blue-400"
-          >
-            Sign in
-          </Link>
-  
-        </div>
-      </nav>
-
-      {/* HERO */}
-      <section className="relative overflow-hidden">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/2 top-0 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-blue-500/10 blur-[120px]" />
-
-          <div className="absolute left-10 top-80 h-64 w-64 rounded-full bg-cyan-500/5 blur-[100px]" />
-
-          <div className="absolute right-10 top-96 h-64 w-64 rounded-full bg-purple-500/5 blur-[100px]" />
-        </div>
-
-        <div className="relative mx-auto max-w-7xl px-6 pb-24 pt-24 sm:px-8 sm:pt-32 lg:px-10">
-          <div className="max-w-4xl">
-            <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-blue-400/20 bg-blue-400/10 px-4 py-2 text-sm text-blue-300">
-              <span className="h-2 w-2 rounded-full bg-blue-400" />
-              AI-powered email productivity
-            </div>
-
-            <h1 className="text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
-              Automate your email.
-              <span className="block bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
-                Work smarter.
-              </span>
-            </h1>
-
-            <p className="mt-7 max-w-3xl text-lg leading-8 text-slate-400 sm:text-xl">
-              Email Automation AI is a productivity platform that connects
-              with Gmail to help users organize email workflows, analyze
-              messages, generate AI-assisted responses, and automate repetitive
-              communication tasks.
-            </p>
-
-            <div className="mt-9 flex flex-col gap-4 sm:flex-row">
-              <Link
-                href="/login"
-                className="inline-flex items-center justify-center rounded-xl bg-blue-500 px-7 py-3.5 font-semibold text-white shadow-xl shadow-blue-500/20 transition hover:-translate-y-0.5 hover:bg-blue-400"
-              >
-                Get Started
-                <span className="ml-2">→</span>
-              </Link>
-
-              <Link
-                href="/privacy"
-                className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-7 py-3.5 font-semibold text-slate-200 transition hover:bg-white/10"
-              >
-                Read Privacy Policy
-              </Link>
-            </div>
-          </div>
-
-          {/* TRUST CARDS */}
-          <div className="mt-20 grid gap-4 md:grid-cols-3">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur">
-              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400">
-                G
-              </div>
-
-              <h3 className="font-semibold text-white">
-                Google OAuth
-              </h3>
-
-              <p className="mt-2 text-sm leading-6 text-slate-500">
-                Authentication through Google's authorization system.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur">
-              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400">
-                @
-              </div>
-
-              <h3 className="font-semibold text-white">
-                Gmail Integration
-              </h3>
-
-              <p className="mt-2 text-sm leading-6 text-slate-500">
-                Gmail access is requested only for enabled application
-                features.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur">
-              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-purple-500/10 text-purple-400">
-                ✓
-              </div>
-
-              <h3 className="font-semibold text-white">
-                User Control
-              </h3>
-
-              <p className="mt-2 text-sm leading-6 text-slate-500">
-                Users control the permissions granted to the application.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FEATURES */}
-      <section
-        id="features"
-        className="border-y border-white/10 bg-slate-900/40"
-      >
-        <div className="mx-auto max-w-7xl px-6 py-24 sm:px-8 lg:px-10">
-          <div className="max-w-3xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
-              What the application does
-            </p>
-
-            <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
-              One workspace for email automation
-            </h2>
-
-            <p className="mt-5 text-lg leading-8 text-slate-400">
-              Email Automation AI combines Gmail connectivity, automation
-              workflows, and AI-assisted productivity features in one
-              application.
-            </p>
-          </div>
-
-          <div className="mt-14 grid gap-5 md:grid-cols-2">
-            {features.map((feature) => (
-              <div
-                key={feature.number}
-                className="group rounded-2xl border border-white/10 bg-slate-950 p-7 transition duration-300 hover:-translate-y-1 hover:border-blue-400/30 hover:bg-slate-900"
-              >
-                <div className="flex items-start justify-between">
-                  <span className="text-sm font-semibold text-blue-400">
-                    {feature.number}
-                  </span>
-
-                  <span className="text-slate-700 transition group-hover:text-blue-400">
-                    ✦
-                  </span>
-                </div>
-
-                <h3 className="mt-8 text-xl font-semibold">
-                  {feature.title}
-                </h3>
-
-                <p className="mt-3 leading-7 text-slate-400">
-                  {feature.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* GOOGLE DATA */}
-      <section id="google-data">
-        <div className="mx-auto max-w-7xl px-6 py-24 sm:px-8 lg:px-10">
-          <div className="grid gap-14 lg:grid-cols-2 lg:items-start">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
-                Google data transparency
-              </p>
-
-              <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
-                Why Email Automation AI requests Google access
-              </h2>
-
-              <p className="mt-5 leading-8 text-slate-400">
-                Google permissions are requested so that the application can
-                provide Gmail-based automation and productivity functionality.
-                Users see Google's authorization screen before access is
-                granted.
-              </p>
-
-              <p className="mt-5 leading-8 text-slate-400">
-                Google data is used to provide the email functionality that
-                the user enables and is not requested simply for advertising.
-              </p>
-            </div>
-
-            <div className="rounded-3xl border border-white/10 bg-slate-900/70 p-7 shadow-2xl shadow-black/20">
-              <h3 className="text-lg font-semibold">
-                Google information that may be accessed
-              </h3>
-
-              <ul className="mt-6 space-y-4">
-                {googleData.map((item) => (
-                  <li
-                    key={item}
-                    className="flex gap-3 text-sm leading-6 text-slate-400"
-                  >
-                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-400" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-7 rounded-2xl border border-blue-400/10 bg-blue-400/5 p-5">
-                <p className="text-sm leading-6 text-slate-300">
-                  Users can revoke Email Automation AI's access to their
-                  Google Account through their Google Account settings.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* PRIVACY */}
-      <section className="border-y border-white/10 bg-slate-900/40">
-        <div className="mx-auto max-w-5xl px-6 py-20 text-center sm:px-8">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
-            Privacy and security
-          </p>
-
-          <h2 className="mt-4 text-3xl font-bold">
-            Your data is used to provide the service
-          </h2>
-
-          <p className="mx-auto mt-5 max-w-2xl leading-8 text-slate-400">
-            Email Automation AI is designed to use account and Google data for
-            the functionality users request. We do not sell Google user data.
-            Sensitive authentication information is protected using security
-            measures described in our Privacy Policy.
-          </p>
-
-          <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-            <Link
-              href="/privacy"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "12px 24px",
-                borderRadius: "12px",
-                backgroundColor: "#2563eb",
-                color: "#ffffff",
-                fontSize: "15px",
-                fontWeight: 600,
-                textDecoration: "none",
-                border: "1px solid #2563eb",
-                boxShadow: "0 8px 24px rgba(37, 99, 235, 0.20)",
-                transition: "all 0.2s ease",
-              }}
-            >
-              View Privacy Policy
-            </Link>
-
-            <Link
-              href="/terms"
-              className="rounded-xl border border-white/10 bg-white/5 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
-            >
-              View Terms
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section>
-        <div className="mx-auto max-w-7xl px-6 py-24 text-center sm:px-8 lg:px-10">
-          <h2 className="text-3xl font-bold sm:text-4xl">
-            Start managing your email more efficiently.
-          </h2>
-
-          <p className="mx-auto mt-5 max-w-2xl leading-7 text-slate-400">
-            Connect your Google Account and use the email automation features
-            available in Email Automation AI.
-          </p>
-
-          <Link
-            href="/login"
-            className="mt-8 inline-flex rounded-xl bg-blue-500 px-7 py-3.5 font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:bg-blue-400"
-          >
-            Sign in with Google
-          </Link>
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="border-t border-white/10 bg-slate-950">
-        <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-10 sm:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-10">
-          <div>
-            <p className="font-semibold">Email Automation AI</p>
-
-            <p className="mt-1 text-sm text-slate-500">
-              Intelligent email automation and productivity.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-5 text-sm">
-            <Link
-              href="/privacy"
-              className="text-slate-400 transition hover:text-white"
-            >
-              Privacy Policy
-            </Link>
-
-            <Link
-              href="/terms"
-              className="text-slate-400 transition hover:text-white"
-            >
-              Terms of Service
-            </Link>
+            </a>
 
             <a
-              href="mailto:kaushalgaikwad810@gmail.com"
-              className="text-slate-400 transition hover:text-white"
+              href="/terms"
+              className="text-sm text-white/60 transition hover:text-white"
             >
-              Contact
+              Terms
+            </a>
+          </nav>
+
+          <a
+            href="/login"
+            className="rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition hover:border-white/25 hover:bg-white/10"
+          >
+            Sign in
+          </a>
+        </div>
+      </header>
+
+      {/* Hero */}
+      <Hero backendReady={backendReady} />
+
+      {/* Features */}
+      <section
+        id="features"
+        className="border-t border-white/10 px-6 py-24 lg:px-8"
+      >
+        <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-400">
+              Built for your inbox
+            </p>
+
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-white md:text-5xl">
+              Your email, with less manual work.
+            </h2>
+
+            <p className="mt-5 text-base leading-7 text-white/55 md:text-lg">
+              MailPilot AI helps organize Gmail, understand incoming
+              messages, prepare replies and keep you in control before
+              anything is sent.
+            </p>
+          </div>
+
+          <div className="mt-16 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            <FeatureCard
+              title="Smart organization"
+              description="Automatically understand and organize incoming messages into useful categories."
+            />
+
+            <FeatureCard
+              title="AI reply drafts"
+              description="Generate useful reply suggestions based on the context of the email."
+            />
+
+            <FeatureCard
+              title="Your writing style"
+              description="Learn your preferred tone, greetings, sentence style and communication patterns."
+            />
+
+            <FeatureCard
+              title="Human approval"
+              description="Review suggested responses before MailPilot sends anything from your Gmail account."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Privacy section */}
+      <section className="border-t border-white/10 px-6 py-24 lg:px-8">
+        <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-8 rounded-3xl border border-white/10 bg-white/[0.03] p-8 text-center md:p-12">
+          <div>
+            <h2 className="text-2xl font-bold text-white md:text-3xl">
+              Your inbox stays under your control.
+            </h2>
+
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-white/55 md:text-base">
+              MailPilot AI is designed around controlled Gmail access,
+              transparent permissions and user approval before sending
+              messages.
+            </p>
+          </div>
+
+          <a
+            href="/privacy"
+            className="inline-flex rounded-xl border border-white/15 bg-white/5 px-6 py-3 font-semibold text-white transition hover:border-white/25 hover:bg-white/10"
+          >
+            View Privacy Policy
+          </a>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-white/10 px-6 py-10 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 text-sm text-white/40 md:flex-row md:items-center md:justify-between">
+          <p>
+            © {new Date().getFullYear()} MailPilot AI
+          </p>
+
+          <div className="flex gap-5">
+            <a
+              href="/privacy"
+              className="transition hover:text-white"
+            >
+              Privacy
+            </a>
+
+            <a
+              href="/terms"
+              className="transition hover:text-white"
+            >
+              Terms
             </a>
           </div>
         </div>
       </footer>
     </main>
+  );
+}
+
+function FeatureCard({
+  title,
+  description,
+}: {
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="group rounded-2xl border border-white/10 bg-white/[0.025] p-6 transition duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.04]">
+      <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5">
+        <div className="h-2 w-2 rounded-full bg-blue-400" />
+      </div>
+
+      <h3 className="text-lg font-semibold text-white">
+        {title}
+      </h3>
+
+      <p className="mt-3 text-sm leading-6 text-white/50">
+        {description}
+      </p>
+    </div>
   );
 }
