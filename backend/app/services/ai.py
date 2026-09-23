@@ -1,18 +1,91 @@
-import json, httpx
+import asyncio
+import httpx
+
 from ..config import settings
 
+
+OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+
+
 async def ai_json(system: str, user: str):
-    if not settings.openrouter_api_key: raise RuntimeError("OPENROUTER_API_KEY is not configured")
-    payload={"model":settings.openrouter_model,"temperature":0.2,"response_format":{"type":"json_object"},"messages":[{"role":"system","content":system},{"role":"user","content":user}]}
-    headers={"Authorization":f"Bearer {settings.openrouter_api_key}","Content-Type":"application/json"}
-    async with httpx.AsyncClient(timeout=60) as c:
-        r=await c.post("https://openrouter.ai/api/v1/chat/completions",json=payload,headers=headers); r.raise_for_status()
-        return json.loads(r.json()["choices"][0]["message"]["content"])
+    if not settings.openrouter_api_key:
+        raise RuntimeError("OpenRouter API key is not configured.")
 
-async def classify_email(subject, body, style=""):
-    system='''You are a careful personal email assistant. Return JSON only with keys: category, summary, suggested_reply, promo_explanation, promo_suggestion, promo_reason, needs_reply, deadline_title, deadline_description, deadline_iso, priority, suggested_action. category must be reply, promotional, or other. Never invent deadlines; deadline_iso must be null unless clearly present. Keep summaries concise. Suggested replies must preserve the user's style.'''
-    user=f"STYLE:\n{style}\n\nSUBJECT:\n{subject}\n\nEMAIL:\n{body[:12000]}"
-    return await ai_json(system,user)
+    payload = {
+        "model": settings.openrouter_model,
+        "messages": [
+            {
+                "role": "system",
+                "content": system,
+            },
+            {
+                "role": "user",
+                "content": user,
+            },
+        ],
+        "response_format": {
+            "type": "json_object"
+        },
+    }
 
-async def analyze_style(sample):
-    return await ai_json("Analyze a user's email writing style. Return JSON with formality, tone, sentence_length, greeting_style, closing_style, vocabulary, request_style, yes_no_style, overall_style and guidance. Do not judge the person.", sample)
+    headers = {
+        "Authorization": f"Bearer {settings.openrouter_api_key}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": settings.frontend_url,
+        "X-Title": "MailPilot AI",
+    }
+
+    max_attempts = 3
+
+    async with httpx.AsyncClient(timeout=60) as client:
+        for attempt in range(max_attempts):
+            response = await client.post(
+                OPENROUTER_URL,
+                json=payload,
+                headers=headers,
+            )
+
+            if response.status_code == 429:
+                if attempt < max_attempts - 1:
+                    retry_after = response.headers.get(
+                        "Retry-After"
+                    )
+
+                    try:
+                        wait_seconds = float(retry_after)
+                    except (TypeError, ValueError):
+                        wait_seconds = 5 * (attempt + 1)
+
+                    await asyncio.sleep(
+                        min(wait_seconds, 20)
+                    )
+
+                    continue
+
+                raise RuntimeError(
+                    "AI service is temporarily rate limited. "
+                    "Please try scanning your Gmail again in a moment."
+                )
+
+            if response.status_code >= 400:
+                try:
+                    error_data = response.json()
+                except Exception:
+                    error_data = response.text
+
+                raise RuntimeError(
+                    f"AI service request failed: {error_data}"
+                )
+
+            data = response.json()
+
+            try:
+                content = data["choices"][0]["message"]["content"]
+            except (KeyError, IndexError, TypeError) as exc:
+                raise RuntimeError(
+                    "AI service returned an unexpected response."
+                ) from exc
+
+            return content
+
+    raise RuntimeError("AI service request failed.")
