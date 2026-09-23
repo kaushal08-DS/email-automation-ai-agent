@@ -47,24 +47,19 @@ async def ai_json(system: str, user: str):
 
             if response.status_code == 429:
                 if attempt < max_attempts - 1:
-                    retry_after = response.headers.get(
-                        "Retry-After"
-                    )
+                    retry_after = response.headers.get("Retry-After")
 
                     try:
                         wait_seconds = float(retry_after)
                     except (TypeError, ValueError):
                         wait_seconds = 5 * (attempt + 1)
 
-                    await asyncio.sleep(
-                        min(wait_seconds, 20)
-                    )
-
+                    await asyncio.sleep(min(wait_seconds, 20))
                     continue
 
                 raise RuntimeError(
                     "AI service is temporarily rate limited. "
-                    "Please try scanning your Gmail again in a moment."
+                    "Please try again in a moment."
                 )
 
             if response.status_code >= 400:
@@ -80,12 +75,95 @@ async def ai_json(system: str, user: str):
             data = response.json()
 
             try:
-                content = data["choices"][0]["message"]["content"]
+                return data["choices"][0]["message"]["content"]
             except (KeyError, IndexError, TypeError) as exc:
                 raise RuntimeError(
                     "AI service returned an unexpected response."
                 ) from exc
 
-            return content
-
     raise RuntimeError("AI service request failed.")
+
+
+async def classify_email(
+    subject: str,
+    body: str,
+    style: str,
+):
+    system = """
+You are an email classification assistant for MailPilot AI.
+
+Analyze the email and classify it into one of these categories:
+
+- reply
+- promotional
+- informational
+- other
+
+Determine whether the email requires a response.
+
+Return ONLY valid JSON with these fields:
+
+{
+  "category": "reply",
+  "needs_reply": true,
+  "summary": "short summary",
+  "priority": "low",
+  "reason": "short explanation"
+}
+
+Priority must be one of:
+- low
+- medium
+- high
+
+Do not return markdown.
+"""
+
+    user = f"""
+User's writing style:
+
+{style}
+
+Email subject:
+
+{subject}
+
+Email body:
+
+{body}
+"""
+
+    return await ai_json(system, user)
+
+
+async def analyze_style(sample: str):
+    system = """
+You are an email writing-style analyzer for MailPilot AI.
+
+Analyze the user's email writing sample.
+
+Return ONLY valid JSON with:
+
+{
+  "tone": "",
+  "formality": "",
+  "sentence_length": "",
+  "greeting_style": "",
+  "closing_style": "",
+  "vocabulary": "",
+  "punctuation_style": "",
+  "common_phrases": [],
+  "communication_preferences": "",
+  "overall_style_summary": ""
+}
+
+Do not return markdown.
+"""
+
+    user = f"""
+Analyze this email writing sample:
+
+{sample}
+"""
+
+    return await ai_json(system, user)
