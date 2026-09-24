@@ -9,20 +9,14 @@ from ..config import settings
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 
-# Maximum number of automatic retries for temporary OpenRouter failures.
 MAX_ATTEMPTS = 3
-
-# Never sleep longer than this between automatic retries.
 MAX_RETRY_WAIT = 120
 
 
-def _get_retry_seconds(response: httpx.Response, default: float) -> float:
-    """
-    Read Retry-After from the OpenRouter response.
-
-    OpenRouter may return this header when requests are temporarily
-    rate-limited or when the current in-flight budget is exhausted.
-    """
+def _get_retry_seconds(
+    response: httpx.Response,
+    default: float,
+) -> float:
     retry_after = response.headers.get("Retry-After")
 
     try:
@@ -33,18 +27,10 @@ def _get_retry_seconds(response: httpx.Response, default: float) -> float:
     return max(0.0, min(seconds, MAX_RETRY_WAIT))
 
 
-async def ai_json(system: str, user: str) -> dict[str, Any]:
-    """
-    Send a request to OpenRouter and return a validated JSON object.
-
-    Handles:
-    - OpenRouter 402 in-flight budget exhaustion
-    - OpenRouter 429 rate limiting
-    - temporary retry delays
-    - invalid JSON
-    - malformed OpenRouter responses
-    - missing API key
-    """
+async def ai_json(
+    system: str,
+    user: str,
+) -> dict[str, Any]:
 
     if not settings.openrouter_api_key:
         raise RuntimeError(
@@ -53,6 +39,10 @@ async def ai_json(system: str, user: str) -> dict[str, Any]:
 
     payload = {
         "model": settings.openrouter_model,
+        "temperature": 0.2,
+        "response_format": {
+            "type": "json_object"
+        },
         "messages": [
             {
                 "role": "system",
@@ -63,9 +53,6 @@ async def ai_json(system: str, user: str) -> dict[str, Any]:
                 "content": user,
             },
         ],
-        "response_format": {
-            "type": "json_object"
-        },
     }
 
     headers = {
@@ -82,7 +69,9 @@ async def ai_json(system: str, user: str) -> dict[str, Any]:
         pool=20.0,
     )
 
-    async with httpx.AsyncClient(timeout=timeout) as client:
+    async with httpx.AsyncClient(
+        timeout=timeout
+    ) as client:
 
         for attempt in range(MAX_ATTEMPTS):
 
@@ -96,28 +85,28 @@ async def ai_json(system: str, user: str) -> dict[str, Any]:
             except httpx.TimeoutException as exc:
 
                 if attempt < MAX_ATTEMPTS - 1:
-                    wait_seconds = min(
-                        5 * (attempt + 1),
-                        MAX_RETRY_WAIT,
+                    await asyncio.sleep(
+                        min(
+                            5 * (attempt + 1),
+                            MAX_RETRY_WAIT,
+                        )
                     )
-
-                    await asyncio.sleep(wait_seconds)
                     continue
 
                 raise RuntimeError(
-                    "AI service timed out while processing the request. "
-                    "Please try again in a moment."
+                    "AI service timed out while processing "
+                    "the request. Please try again."
                 ) from exc
 
             except httpx.RequestError as exc:
 
                 if attempt < MAX_ATTEMPTS - 1:
-                    wait_seconds = min(
-                        3 * (attempt + 1),
-                        MAX_RETRY_WAIT,
+                    await asyncio.sleep(
+                        min(
+                            3 * (attempt + 1),
+                            MAX_RETRY_WAIT,
+                        )
                     )
-
-                    await asyncio.sleep(wait_seconds)
                     continue
 
                 raise RuntimeError(
@@ -125,9 +114,9 @@ async def ai_json(system: str, user: str) -> dict[str, Any]:
                     "Please try again in a moment."
                 ) from exc
 
-            # ---------------------------------------------------------
-            # OpenRouter temporary rate limit
-            # ---------------------------------------------------------
+            # --------------------------------------------------
+            # RATE LIMIT
+            # --------------------------------------------------
 
             if response.status_code == 429:
 
@@ -146,24 +135,11 @@ async def ai_json(system: str, user: str) -> dict[str, Any]:
                     "Please try again in a moment."
                 )
 
-            # ---------------------------------------------------------
-            # OpenRouter 402
-            #
-            # This can happen when the account's current in-flight
-            # request budget is exhausted.
-            # ---------------------------------------------------------
+            # --------------------------------------------------
+            # OPENROUTER 402
+            # --------------------------------------------------
 
             if response.status_code == 402:
-
-                if attempt < MAX_ATTEMPTS - 1:
-
-                    wait_seconds = _get_retry_seconds(
-                        response,
-                        default=30,
-                    )
-
-                    await asyncio.sleep(wait_seconds)
-                    continue
 
                 try:
                     error_data = response.json()
@@ -173,6 +149,7 @@ async def ai_json(system: str, user: str) -> dict[str, Any]:
                 error_message = ""
 
                 if isinstance(error_data, dict):
+
                     error = error_data.get("error")
 
                     if isinstance(error, dict):
@@ -180,22 +157,41 @@ async def ai_json(system: str, user: str) -> dict[str, Any]:
                             error.get("message") or ""
                         )
 
-                if "in_flight_budget_exhausted" in error_message:
+                if (
+                    "in_flight_budget_exhausted"
+                    in error_message
+                ):
+
+                    if attempt < MAX_ATTEMPTS - 1:
+
+                        wait_seconds = _get_retry_seconds(
+                            response,
+                            default=30,
+                        )
+
+                        await asyncio.sleep(
+                            wait_seconds
+                        )
+
+                        continue
+
                     raise RuntimeError(
-                        "AI service is temporarily unavailable because "
-                        "the OpenRouter in-flight request limit was reached. "
-                        "Please wait a few minutes and try syncing again."
+                        "AI service is temporarily unavailable "
+                        "because the OpenRouter in-flight request "
+                        "limit was reached. Please wait a few "
+                        "minutes and try again."
                     )
 
                 raise RuntimeError(
-                    "AI service is temporarily unavailable because "
-                    "the OpenRouter account has reached its current "
-                    "credit or request limit. Please try again later."
+                    "AI service is temporarily unavailable "
+                    "because the OpenRouter account has reached "
+                    "its current credit or request limit. "
+                    "Please try again later."
                 )
 
-            # ---------------------------------------------------------
-            # Other HTTP errors
-            # ---------------------------------------------------------
+            # --------------------------------------------------
+            # OTHER HTTP ERRORS
+            # --------------------------------------------------
 
             if response.status_code >= 400:
 
@@ -208,9 +204,9 @@ async def ai_json(system: str, user: str) -> dict[str, Any]:
                     f"AI service request failed: {error_data}"
                 )
 
-            # ---------------------------------------------------------
-            # Successful response
-            # ---------------------------------------------------------
+            # --------------------------------------------------
+            # SUCCESS
+            # --------------------------------------------------
 
             try:
                 data = response.json()
@@ -227,9 +223,7 @@ async def ai_json(system: str, user: str) -> dict[str, Any]:
                         "No choices returned."
                     )
 
-                message = choices[0]["message"]
-
-                content = message["content"]
+                content = choices[0]["message"]["content"]
 
             except (
                 KeyError,
@@ -244,7 +238,8 @@ async def ai_json(system: str, user: str) -> dict[str, Any]:
 
             if not isinstance(content, str):
                 raise RuntimeError(
-                    "AI service returned an unexpected message format."
+                    "AI service returned an unexpected "
+                    "message format."
                 )
 
             content = content.strip()
@@ -254,22 +249,17 @@ async def ai_json(system: str, user: str) -> dict[str, Any]:
                     "AI service returned an empty response."
                 )
 
-            # ---------------------------------------------------------
-            # Parse JSON
-            # ---------------------------------------------------------
-
             try:
                 result = json.loads(content)
-
             except json.JSONDecodeError as exc:
-
                 raise RuntimeError(
                     "AI service returned invalid JSON."
                 ) from exc
 
             if not isinstance(result, dict):
                 raise RuntimeError(
-                    "AI service returned JSON in an unexpected format."
+                    "AI service returned JSON in an "
+                    "unexpected format."
                 )
 
             return result
@@ -286,13 +276,13 @@ async def ai_json(system: str, user: str) -> dict[str, Any]:
 async def classify_email(
     subject: str,
     body: str,
-    style: str,
+    style: str = "",
 ) -> dict[str, Any]:
 
     system = """
-You are an email classification assistant for MailPilot AI.
+You are MailPilot AI, a careful personal email assistant.
 
-Analyze the email and classify it into exactly one of these categories:
+Analyze the email and classify it into exactly one category:
 
 - reply
 - promotional
@@ -301,110 +291,99 @@ Analyze the email and classify it into exactly one of these categories:
 - informational
 - other
 
-Determine whether the email requires a response.
-
-For spam emails, identify:
-- why the email appears to be spam
-- spam risk
-
-For purchase-related emails, determine:
-- likely_purchase
-- review
-- likely_not_purchase
-
-For emails that may require a response, provide a concise suggested reply.
-
-If the email contains a deadline or important date, identify it when possible.
-
 Return ONLY valid JSON.
 
 Use this structure:
 
 {
   "category": "reply",
-  "needs_reply": true,
-  "summary": "Short summary of the email",
-  "priority": "medium",
-  "reason": "Short explanation",
+  "summary": "Short summary",
+  "suggested_reply": "Suggested reply or null",
 
-  "suggested_reply": "Suggested reply text or null",
+  "promo_explanation": "Explanation or null",
+  "promo_suggestion": "Suggested action or null",
+  "promo_reason": "Reason or null",
 
-  "promo_explanation": "Explanation if promotional or null",
-  "promo_suggestion": "Suggested action if promotional or null",
-  "promo_reason": "Reason if promotional or null",
-
-  "spam_reason": "Reason if spam or null",
+  "spam_reason": "Reason or null",
   "spam_risk": "low",
 
   "purchase_decision": "likely_purchase",
-  "purchase_reason": "Reason if purchase-related or null",
+  "purchase_reason": "Reason or null",
 
-  "deadline_title": "Deadline title or null",
-  "deadline_iso": "ISO datetime or null",
-  "deadline_description": "Deadline description or null",
-  "suggested_action": "Suggested action or null"
+  "needs_reply": true,
+
+  "deadline_title": null,
+  "deadline_description": null,
+  "deadline_iso": null,
+
+  "priority": "medium",
+  "suggested_action": null
 }
 
 Rules:
 
-1. category must be exactly one of:
-   reply, promotional, purchase, spam, informational, other
+1. category must be:
+   reply, promotional, purchase, spam,
+   informational, or other.
 
-2. priority must be exactly one of:
-   low, medium, high
+2. priority must be:
+   low, medium, or high.
 
 3. spam_risk must be:
-   low, medium, high, or null
+   low, medium, high, or null.
 
 4. purchase_decision must be:
-   likely_purchase, review, likely_not_purchase, or null
+   likely_purchase, review, likely_not_purchase, or null.
 
-5. If the email is not spam:
-   spam_reason must be null
-   spam_risk must be null
+5. If category is not spam:
+   spam_reason = null
+   spam_risk = null
 
-6. If the email is not purchase-related:
-   purchase_decision must be null
-   purchase_reason must be null
+6. If category is not purchase:
+   purchase_decision = null
+   purchase_reason = null
 
-7. If the email is not promotional:
-   promo_explanation must be null
-   promo_suggestion must be null
-   promo_reason must be null
+7. If category is not promotional:
+   promo_explanation = null
+   promo_suggestion = null
+   promo_reason = null
 
-8. If the email does not require a response:
-   needs_reply should be false
-   suggested_reply should be null
+8. If needs_reply is false:
+   suggested_reply = null
 
-9. Do not invent information that is not present in the email.
+9. Never invent deadlines.
 
-10. Do not return markdown.
+10. Never invent information that isn't in the email.
 
-11. Return valid JSON only.
+11. Suggested replies must preserve the user's writing style.
+
+12. Return JSON only.
+
+Keep summaries and reasons concise.
 """
 
     user = f"""
-User's writing style:
+USER WRITING STYLE:
 
 {style or "No writing style profile is available."}
 
-Email subject:
+EMAIL SUBJECT:
 
 {subject or "(No subject)"}
 
-Email body:
+EMAIL:
 
-{body or "(No email body available)"}
+{body[:12000] if body else "(No email body available)"}
 """
 
     return await ai_json(
-        system=system,
-        user=user,
+        system,
+        user,
     )
 
 
 # ============================================================
-# WRITING STYLE ANALYSIS
+# WRITING STYLE
 # ============================================================
 
 async def analyze_style(
@@ -412,57 +391,98 @@ async def analyze_style(
 ) -> dict[str, Any]:
 
     system = """
-You are a writing-style analysis assistant for MailPilot AI.
+Analyze the user's email writing style.
 
-Analyze the user's email writing sample and create a concise
-writing-style profile that can be used to generate future
-email replies in the user's natural style.
-
-Analyze:
-
-- tone
-- formality
-- sentence length
-- greeting style
-- closing style
-- vocabulary
-- directness
-- use of emojis
-- punctuation
-- common phrases
-- overall writing characteristics
-
-Return ONLY valid JSON.
-
-Use this structure:
+Return ONLY valid JSON with:
 
 {
-  "tone": "friendly",
-  "formality": "casual",
-  "sentence_length": "short",
-  "greeting_style": "Hi",
-  "closing_style": "Thanks",
-  "vocabulary": "simple and conversational",
-  "directness": "direct",
-  "emoji_usage": "rare",
-  "punctuation": "simple",
-  "common_phrases": [],
-  "profile": "Concise description of the user's writing style"
+  "formality": "",
+  "tone": "",
+  "sentence_length": "",
+  "greeting_style": "",
+  "closing_style": "",
+  "vocabulary": "",
+  "request_style": "",
+  "yes_no_style": "",
+  "overall_style": "",
+  "guidance": ""
 }
 
-Do not invent characteristics that are not supported by
-the provided writing sample.
-
-Return valid JSON only.
-"""
-
-    user = f"""
-Analyze this writing sample:
-
-{sample or "(No writing sample provided)"}
+Do not judge the person.
+Only describe their writing style.
 """
 
     return await ai_json(
-        system=system,
-        user=user,
+        system,
+        sample or "",
+    )
+
+
+# ============================================================
+# SHUFFLE REPLY
+# ============================================================
+
+async def shuffle_reply(
+    subject: str,
+    body: str,
+    current_reply: str,
+    style: str,
+) -> dict[str, Any]:
+
+    system = """
+You are MailPilot AI's email reply variation assistant.
+
+The user clicked the "Shuffle" button because they want a
+meaningfully different reply from the current AI suggestion.
+
+Generate a substantially different email reply.
+
+IMPORTANT:
+
+- Do NOT simply paraphrase the current reply.
+- Keep the original email context.
+- Preserve the user's writing style.
+- The new reply can change the response direction when
+  appropriate.
+- It can be positive, neutral, cautious, negative,
+  a polite refusal, a request for information, or
+  a concise acknowledgement.
+- Do not invent facts.
+- Do not claim that the user agreed to something unless
+  the email supports it.
+- Do not mention AI.
+- Do not explain your reasoning.
+- Make the response ready to send.
+- Keep it natural.
+
+Return ONLY valid JSON:
+
+{
+  "reply": "The new email reply"
+}
+"""
+
+    user = f"""
+USER'S WRITING STYLE:
+
+{style or "No writing style profile is available."}
+
+ORIGINAL EMAIL SUBJECT:
+
+{subject or "(No subject)"}
+
+ORIGINAL EMAIL:
+
+{body or "(No email body available)"}
+
+CURRENT SUGGESTED REPLY:
+
+{current_reply or "(No current reply)"}
+
+Generate a substantially different reply.
+"""
+
+    return await ai_json(
+        system,
+        user,
     )
