@@ -184,6 +184,10 @@ class Email(Base):
         nullable=True,
     )
 
+    # --------------------------------------------------------
+    # AI CATEGORY
+    # --------------------------------------------------------
+
     category: Mapped[str] = mapped_column(
         String(40),
         default="other",
@@ -200,6 +204,10 @@ class Email(Base):
         nullable=True,
     )
 
+    # --------------------------------------------------------
+    # PROMOTIONAL
+    # --------------------------------------------------------
+
     promo_explanation: Mapped[str | None] = mapped_column(
         Text(),
         nullable=True,
@@ -215,14 +223,71 @@ class Email(Base):
         nullable=True,
     )
 
-    # Promotional items can be removed from the user's
-    # active promotional workspace without deleting
-    # the original Gmail email.
     promo_deleted: Mapped[bool] = mapped_column(
         Boolean,
         default=False,
         nullable=False,
     )
+
+    # -----------------------------
+    # SPAM
+    # -----------------------------
+
+    spam_reason: Mapped[str | None] = mapped_column(
+        Text(),
+        nullable=True,
+    )
+
+    spam_risk: Mapped[str | None] = mapped_column(
+        String(30),
+        nullable=True,
+    )
+
+    spam_deleted: Mapped[bool] = mapped_column(
+        Boolean,
+        default=False,
+        nullable=False,
+    )
+
+    # -----------------------------
+    # PURCHASE
+    # -----------------------------
+
+    purchase_decision: Mapped[str | None] = mapped_column(
+        String(40),
+        nullable=True,
+    )
+
+    purchase_reason: Mapped[str | None] = mapped_column(
+        Text(),
+        nullable=True,
+    )
+
+    purchase_deleted: Mapped[bool] = mapped_column(
+        Boolean,
+        default=False,
+        nullable=False,
+    )
+
+    # -----------------------------
+    # EXISTING STATUS
+    # -----------------------------
+
+    ignored: Mapped[bool] = mapped_column(
+        Boolean,
+        default=False,
+        nullable=False,
+    )
+
+    replied: Mapped[bool] = mapped_column(
+        Boolean,
+        default=False,
+        nullable=False,
+    )
+
+    # --------------------------------------------------------
+    # EMAIL STATUS
+    # --------------------------------------------------------
 
     ignored: Mapped[bool] = mapped_column(
         Boolean,

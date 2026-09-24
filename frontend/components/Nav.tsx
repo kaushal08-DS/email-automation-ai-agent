@@ -9,9 +9,10 @@ import {
   CreditCard,
   FileText,
   Inbox,
-  Mail,
   MessageSquare,
   Settings,
+  ShieldAlert,
+  ShoppingBag,
   Sparkles,
   Tags,
 } from "lucide-react";
@@ -31,6 +32,16 @@ const items = [
     href: "/promotional",
     label: "Promotional",
     icon: Tags,
+  },
+  {
+    href: "/purchases",
+    label: "Purchases",
+    icon: ShoppingBag,
+  },
+  {
+    href: "/spam",
+    label: "Spam",
+    icon: ShieldAlert,
   },
   {
     href: "/insights",
@@ -73,7 +84,10 @@ export default function Nav() {
         <span>MailPilot AI</span>
       </div>
 
-      <nav className="nav" aria-label="MailPilot navigation">
+      <nav
+        className="nav"
+        aria-label="MailPilot navigation"
+      >
         {items.map((item) => {
           const Icon = item.icon;
 
@@ -87,7 +101,9 @@ export default function Nav() {
               key={item.href}
               href={item.href}
               className={active ? "active" : ""}
-              aria-current={active ? "page" : undefined}
+              aria-current={
+                active ? "page" : undefined
+              }
             >
               <Icon
                 size={17}
